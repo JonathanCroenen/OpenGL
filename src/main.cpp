@@ -168,7 +168,7 @@ int main(){
 
         processInput(window);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.5f, 0.6f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
         
@@ -184,30 +184,13 @@ int main(){
         objectShader.setVec3("viewPos", camera.Position);
         objectShader.setFloat("material.shininess", 32.0f);
 
-        objectShader.setVec3("spotLight.ambient", 0.2f, 0.2f, 0.2f);
-        objectShader.setVec3("spotLight.diffuse", 0.5f, 0.5f, 0.5f);
-        objectShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-        objectShader.setVec3("spotLight.position", camera.Position);
-        objectShader.setVec3("spotLight.direction", camera.Front);
-        objectShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-        objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
-        objectShader.setFloat("spotLight.constant", 1.0f);
-        objectShader.setFloat("spotLight.linear", 0.09f);
-        objectShader.setFloat("spotLight.quadratic", 0.032f);
+        objectShader.setSpotLight("spotLights[0]", camera.Position, camera.Front);
 
-        objectShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-        objectShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        objectShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-        objectShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        objectShader.setDirectionalLight("dirLight");
 
+        objectShader.setInt("NR_POINT_LIGHTS", 4);
         for (int i = 0; i < sizeof(pointLightPositions)/sizeof(glm::vec3); i++){
-            objectShader.setVec3(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]);
-            objectShader.setVec3(("pointLights[" + std::to_string(i) + "].ambient").c_str(), 0.05f, 0.05f, 0.05f);
-            objectShader.setVec3(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), 0.8f, 0.8f, 0.8f);
-            objectShader.setVec3(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.0f, 1.0f, 1.0f);
-            objectShader.setFloat(("pointLights[" + std::to_string(i) + "].constant").c_str(), 1.0f);
-            objectShader.setFloat(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.09f);
-            objectShader.setFloat(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.032f);
+            objectShader.setPointLight("pointLights[" + std::to_string(i) + "]", pointLightPositions[i]);
         }
 
         glm::mat4 view = camera.GetViewMatrix();

@@ -67,47 +67,86 @@ class Shader{
             glUseProgram(ID);
         }
 
-        void setBool(const char* name, bool value) const{
-            glUniform1i(glGetUniformLocation(ID, name), (int)value);
+        void setBool(std::string name, bool value) const{
+            glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
         }
-        void setInt(const char* name, int value) const{
-            glUniform1i(glGetUniformLocation(ID, name), value);
+        void setInt(std::string name, int value) const{
+            glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
         }
-        void setFloat(const char* name, float value) const{
-            glUniform1f(glGetUniformLocation(ID, name), value);
-        }
-
-
-        void setVec2(const char* name, glm::vec2 value) const{
-            glUniform2fv(glGetUniformLocation(ID, name), 1, &(value.x));
-        }
-        void setVec2(const char* name, float x, float y) const{
-            glUniform2f(glGetUniformLocation(ID, name), x, y);
-        }
-
-        void setVec3(const char* name, glm::vec3 value) const{
-            glUniform3fv(glGetUniformLocation(ID, name), 1, &(value.x));
-        }
-        void setVec3(const char* name, float x, float y, float z) const{
-            glUniform3f(glGetUniformLocation(ID, name), x, y, z);
-        }
-
-        void setVec4(const char* name, glm::vec4 value) const{
-            glUniform4fv(glGetUniformLocation(ID, name), 1, &(value.x));
-        }
-        void setVec4(const char* name, float x, float y, float z, float w) const{
-            glUniform4f(glGetUniformLocation(ID, name), x, y, z, w);
+        void setFloat(std::string name, float value) const{
+            glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
         }
 
 
-        void setMat2(const char* name, glm::mat2 value) const{
-            glUniformMatrix2fv(glGetUniformLocation(ID, name), 1, GL_FALSE, &(value[0].x));
+        void setVec2(std::string name, glm::vec2 value) const{
+            glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &(value.x));
         }
-        void setMat3(const char* name, glm::mat3 value) const{
-            glUniformMatrix3fv(glGetUniformLocation(ID, name), 1, GL_FALSE, &(value[0].x));
+        void setVec2(std::string name, float x, float y) const{
+            glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
         }
-        void setMat4(const char* name, glm::mat4 value) const{
-            glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, &(value[0].x));
+
+        void setVec3(std::string name, glm::vec3 value) const{
+            glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &(value.x));
+        }
+        void setVec3(std::string name, float x, float y, float z) const{
+            glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
+        }
+
+        void setVec4(std::string name, glm::vec4 value) const{
+            glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &(value.x));
+        }
+        void setVec4(std::string name, float x, float y, float z, float w) const{
+            glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+        }
+
+
+        void setMat2(std::string name, glm::mat2 value) const{
+            glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &(value[0].x));
+        }
+        void setMat3(std::string name, glm::mat3 value) const{
+            glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &(value[0].x));
+        }
+        void setMat4(std::string name, glm::mat4 value) const{
+            glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &(value[0].x));
+        }
+
+        void setPointLight(std::string name, glm::vec3 position, glm::vec3 ambient = glm::vec3(0.05f, 0.05f, 0.05f),
+                            glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f),
+                            float attenuationConstant = 1.0f, float attenuationLinear = 0.09f, float attenuationQuadratic = 0.032f){
+
+            setVec3(name + ".position", position);
+            setVec3(name + ".ambient", ambient);
+            setVec3(name + ".diffuse", diffuse);
+            setVec3(name + ".specular", specular);
+            setFloat(name + ".constant", attenuationConstant);
+            setFloat(name + ".linear", attenuationLinear);
+            setFloat(name + ".quadratic", attenuationQuadratic);
+        }
+
+        void setSpotLight(std::string name, glm::vec3 position, glm::vec3 direction, glm::vec3 ambient = glm::vec3(0.05f, 0.05f, 0.05f),
+                            glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f),
+                            float innerCutOffRadius = 12.5f, float outerCutOffRadius = 17.5f, float attenuationConstant = 1.0f, 
+                            float attenuationLinear = 0.09f, float attenuationQuadratic = 0.032f){
+
+            setVec3(name + ".position", position);
+            setVec3(name + ".direction", direction);
+            setVec3(name + ".ambient", ambient);
+            setVec3(name + ".diffuse", diffuse);
+            setVec3(name + ".specular", specular);
+            setFloat(name + ".cutOff", glm::cos(glm::radians(innerCutOffRadius)));
+            setFloat(name + ".outerCutOff", glm::cos(glm::radians(outerCutOffRadius)));
+            setFloat(name + ".constant", attenuationConstant);
+            setFloat(name + ".linear", attenuationLinear);
+            setFloat(name + ".quadratic", attenuationQuadratic);
+        }
+
+        void setDirectionalLight(std::string name, glm::vec3 direction = glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3 ambient = glm::vec3(0.05f, 0.05f, 0.05f),
+                                 glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f)){
+                                     
+            setVec3(name + ".direction", direction);
+            setVec3(name + ".ambient", ambient);
+            setVec3(name + ".diffuse", diffuse);
+            setVec3(name + ".specular", specular);
         }
     private:
         void checkCompileErrors(GLuint shader, std::string type){
