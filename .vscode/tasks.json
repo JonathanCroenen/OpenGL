@@ -12,7 +12,8 @@
                 "-L./lib",
                 "src/glad.c",
                 "src/image_loader.cpp",
-                "-lglfw3dll",  
+                "-lglfw3dll",
+                "-llibassimp",
                 "-o",
                 "${workspaceFolder}\\${fileBasenameNoExtension}.exe"
             ],
