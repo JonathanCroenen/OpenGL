@@ -17,12 +17,14 @@
 #include <vector>
 
 unsigned int TextureFromFile(const char* path, const std::string &directory, bool gamma = false);
+unsigned int EmptyTexture();
 
 class Model{
     std::vector<Mesh> meshes;
     std::string directory;
     std::vector<Texture> textures_loaded;
     bool gammaCorrection;
+    unsigned int maxTextures = 4;
 
     public:
         Model(const std::string &path, bool gamma = false) : gammaCorrection(gamma){
@@ -130,7 +132,7 @@ class Model{
 
         std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName){
             std::vector<Texture> textures;
-            for (unsigned int i = 0; i < mat->GetTextureCount(type); i++){
+            for (unsigned int i = 0; i < mat->GetTextureCount(type) && i < maxTextures; i++){
                 aiString str;
                 mat->GetTexture(type, i, &str);
                 bool skip = false;
@@ -151,6 +153,16 @@ class Model{
                     textures_loaded.push_back(texture);
                 }
             }
+
+            Texture texture;
+            texture.id = EmptyTexture();
+            texture.path = "empty";
+            texture.type = typeName;
+
+            for (unsigned int i = 0; i < maxTextures - textures.size(); i++){
+                textures.push_back(texture);
+            }
+
             return textures;
         }
 };
@@ -187,6 +199,18 @@ unsigned int TextureFromFile(const char* path, const std::string &directory, boo
         std::cout << "ERROR::TEXTURE::FAILED_TO_LOAD\nPath: " << path << std::endl;
         stbi_image_free(data);
     }
+    return textureID;
+}
+
+unsigned int EmptyTexture(){
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    GLubyte data[] = {255, 255, 255};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
     return textureID;
 }
 

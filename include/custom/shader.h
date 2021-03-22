@@ -112,7 +112,7 @@ class Shader{
 
         void setPointLight(std::string name, glm::vec3 position, glm::vec3 ambient = glm::vec3(0.05f, 0.05f, 0.05f),
                             glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f),
-                            float attenuationConstant = 1.0f, float attenuationLinear = 0.09f, float attenuationQuadratic = 0.032f){
+                            float attenuationConstant = 1.0f, float attenuationLinear = 0.07f, float attenuationQuadratic = 0.017f){
 
             setVec3(name + ".position", position);
             setVec3(name + ".ambient", ambient);
@@ -126,7 +126,7 @@ class Shader{
         void setSpotLight(std::string name, glm::vec3 position, glm::vec3 direction, glm::vec3 ambient = glm::vec3(0.05f, 0.05f, 0.05f),
                             glm::vec3 diffuse = glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f),
                             float innerCutOffRadius = 12.5f, float outerCutOffRadius = 17.5f, float attenuationConstant = 1.0f, 
-                            float attenuationLinear = 0.09f, float attenuationQuadratic = 0.032f){
+                            float attenuationLinear = 0.07f, float attenuationQuadratic = 0.017f){
 
             setVec3(name + ".position", position);
             setVec3(name + ".direction", direction);

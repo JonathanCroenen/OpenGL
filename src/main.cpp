@@ -61,7 +61,7 @@ int main(){
 
     stbi_set_flip_vertically_on_load(true);
 
-    Shader objectShader("src/shaders/basic_vert.glsl", "src/shaders/basic_frag.glsl");
+    Shader objectShader("src/shaders/object_vert.glsl", "src/shaders/object_frag.glsl");
     Shader lightingShader("src/shaders/lighting_vert.glsl", "src/shaders/lighting_frag.glsl");
     
     Model backpack("C:/Users/jonat/OneDrive/Documenten/Code/C/opengl/resource/backpack/backpack.obj");
@@ -73,20 +73,29 @@ int main(){
 
         processInput(window);
 
-        glClearColor(0.5f, 0.6f, 0.9f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
         objectShader.use();
         
-        glm::mat4 view = camera.GetViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f); 
-        objectShader.setMat4("projection", projection);
-        objectShader.setMat4("view", view);
-
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WINDOW_WIDTH/(float)WINDOW_HEIGHT, 0.1f, 100.0f);
+        glm::mat3 normalMat = glm::mat3(glm::transpose(glm::inverse(model)));
+
+        objectShader.setMat4("projection", projection);
+        objectShader.setMat4("view", view);        
         objectShader.setMat4("model", model);
+        objectShader.setMat3("normalMat", normalMat);
+
+        objectShader.setDirectionalLight("dirLight");
+        objectShader.setPointLight("pointLights[0]", glm::vec3(0.0f, 0.0f, 3.0f));
+        objectShader.setSpotLight("spotLights[0]", camera.Position, camera.Front);
+        objectShader.setVec3("viewPos", camera.Position);
+
         backpack.Draw(objectShader);
 
         glfwSwapBuffers(window);    

@@ -60,9 +60,11 @@ class Mesh{
                 else if (name == "texture_height")
                     number = std::to_string(heightNr++);
                 
-                shader.setFloat(("material." + name + number), i);
+                shader.setFloat("material.shininess", 32);
+                shader.setInt(("material." + name + "[" + number + "]"), i);
                 glBindTexture(GL_TEXTURE_2D, textures[i].id);
             }
+
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
